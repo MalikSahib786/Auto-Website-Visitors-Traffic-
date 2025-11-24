@@ -1,10 +1,10 @@
-# Use Python 3.9 Slim (Debian Bookworm based)
+# Use Python 3.9 Slim
 FROM python:3.9-slim
 
-# 1. Install System Dependencies (Chrome & Drivers)
-# We removed the old libraries (libgconf) causing the error.
-# Installing 'chromium' automatically pulls the right dependencies now.
+# 1. Install System Dependencies
+# ADDED 'git' to the list so we can download the tool from GitHub
 RUN apt-get update && apt-get install -y \
+    git \
     wget \
     gnupg \
     unzip \
@@ -13,19 +13,20 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Set Environment Variables so Python can find Chrome
+# 2. Set Environment Variables
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
 
-# 3. Set the working directory
+# 3. Set work directory
 WORKDIR /app
 
-# 4. Copy requirements and install Python packages
+# 4. Install Python Dependencies
 COPY requirements.txt .
+# The 'git' tool installed above allows this step to succeed now
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Copy the rest of the application code
+# 5. Copy App Code
 COPY . .
 
-# 6. Start the API using the PORT variable provided by Railway
+# 6. Start API
 CMD uvicorn main:app --host 0.0.0.0 --port $PORT
