@@ -1,19 +1,17 @@
-# Use Python 3.9 Slim (Debian based)
+# Use Python 3.9 Slim (Debian Bookworm based)
 FROM python:3.9-slim
 
 # 1. Install System Dependencies (Chrome & Drivers)
-# We use -y to automatically say "yes" to prompts
+# We removed the old libraries (libgconf) causing the error.
+# Installing 'chromium' automatically pulls the right dependencies now.
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
     chromium \
     chromium-driver \
-    libglib2.0-0 \
-    libnss3 \
-    libgconf-2-4 \
-    libfontconfig1 \
-    --no-install-recommends
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 # 2. Set Environment Variables so Python can find Chrome
 ENV CHROME_BIN=/usr/bin/chromium
