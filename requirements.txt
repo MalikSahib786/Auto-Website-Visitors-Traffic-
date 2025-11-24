@@ -2,4 +2,4 @@ fastapi
 uvicorn
 celery
 redis
-auto-website-visitor
+git+https://github.com/nayandas69/auto-website-visitor.git
