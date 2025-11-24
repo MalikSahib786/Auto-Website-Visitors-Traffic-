@@ -1,8 +1,20 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware  # <--- Added Import
 from pydantic import BaseModel
 from tasks import generate_traffic_task
 
 app = FastAPI()
+
+# --- ADDED CORS CONFIGURATION ---
+# This allows any website (including your frontend) to talk to this API.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (POST, GET, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
+# --------------------------------
 
 class TrafficRequest(BaseModel):
     url: str
