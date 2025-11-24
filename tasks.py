@@ -1,5 +1,5 @@
 from worker import celery_app
-from auto_website_visitor import Visitor
+from auto_website_visitor import AutoWebsiteVisitor  # <--- FIXED NAME HERE
 import logging
 
 # Setup logging
@@ -10,8 +10,8 @@ def generate_traffic_task(target_url: str, views: int):
     try:
         logging.info(f"Starting traffic for {target_url} - {views} views")
         
-        # Initialize the bot (Headless mode is mandatory for servers)
-        bot = Visitor(
+        # Initialize the bot using the correct class name
+        bot = AutoWebsiteVisitor(
             url=target_url,
             views=views,
             background=True,  # Run without GUI
@@ -22,4 +22,5 @@ def generate_traffic_task(target_url: str, views: int):
         bot.run()
         return {"status": "success", "url": target_url}
     except Exception as e:
+        logging.error(f"Traffic generation failed: {str(e)}")
         return {"status": "failed", "error": str(e)}
