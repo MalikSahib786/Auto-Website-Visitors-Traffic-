@@ -2,4 +2,7 @@ fastapi
 uvicorn
 celery
 redis
-git+https://github.com/nayandas69/auto-website-visitor.git
+selenium
+fake-useragent
+webdriver-manager
+requests
