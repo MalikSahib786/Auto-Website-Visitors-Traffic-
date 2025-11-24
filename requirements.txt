@@ -6,3 +6,4 @@ selenium
 fake-useragent
 webdriver-manager
 requests
+PyYAML
