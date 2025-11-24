@@ -1,7 +1,8 @@
-# Use Python slim image
+# Use Python 3.9 Slim (Debian based)
 FROM python:3.9-slim
 
-# 1. Install Chrome and ChromeDriver dependencies
+# 1. Install System Dependencies (Chrome & Drivers)
+# We use -y to automatically say "yes" to prompts
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
@@ -11,21 +12,22 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libnss3 \
     libgconf-2-4 \
-    libfontconfig1
+    libfontconfig1 \
+    --no-install-recommends
 
-# 2. Set Environment Variables for Chrome
+# 2. Set Environment Variables so Python can find Chrome
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
 
-# 3. Install Python Dependencies
+# 3. Set the working directory
 WORKDIR /app
+
+# 4. Copy requirements and install Python packages
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 4. Copy Code
+# 5. Copy the rest of the application code
 COPY . .
 
-# 5. Start command (We need to run both API and Worker for this simple example, 
-# or use Railway to run them as separate services. 
-# For simplicity, we will use a script to start the API)
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# 6. Start the API using the PORT variable provided by Railway
+CMD uvicorn main:app --host 0.0.0.0 --port $PORT
